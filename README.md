@@ -1,45 +1,44 @@
-# [cite_start]Laporan Implementasi Proyek: Sistem Informasi Berbasis Web [cite: 1]
-## [cite_start]Topik: Pengenalan Dasar PHP, Session, dan Cookie [cite: 3]
 
-### 1. Deskripsi Proyek
-[cite_start]Proyek ini merupakan implementasi dari sistem otentikasi sederhana menggunakan bahasa pemrograman PHP (Hypertext Preprocessor)[cite: 7]. [cite_start]Sesuai dengan materi pembelajaran, proyek ini memanfaatkan kemampuan PHP sebagai bahasa *scripting server-side* yang dieksekusi di server sebelum dikirimkan ke peramban (browser) klien[cite: 7, 8]. [cite_start]Tujuan utama dari pengembangan sistem ini adalah untuk memproses data dari formulir input pengguna serta mengatur hak akses pengguna menggunakan pengelolaan *Session* dan *Cookies*[cite: 11, 13].
+### 1. Deskripsi
+Proyek ini merupakan bentuk implementasi praktis dari modul Sistem Informasi Berbasis Web. Fokus utama dari pengembangan ini adalah untuk memahami dan menerapkan logika dasar bahasa pemrograman PHP sebagai skrip yang berjalan di sisi server. Sistem yang dibangun berupa purwarupa otentikasi pengguna (proses masuk dan keluar sistem) sederhana yang bertujuan untuk mendemonstrasikan bagaimana sebuah aplikasi web mengenali, mengingat, dan membatasi hak akses penggunanya.
 
-### 2. Konsep Dasar yang Diterapkan
-Pengembangan sistem otentikasi ini mengandalkan dua mekanisme pengelolaan *state* pada aplikasi web:
-* [cite_start]**Session:** Session merupakan teknik penyimpanan data sementara di server yang digunakan untuk mengenali pengguna saat berpindah halaman selama sesi tersebut masih aktif[cite: 154]. [cite_start]Mekanisme ini dinilai lebih aman karena data disimpan secara internal di server[cite: 155, 156]. [cite_start]Secara *default*, data session akan otomatis hilang saat sesi berakhir atau peramban ditutup[cite: 157, 158]. [cite_start]Setiap file yang membutuhkan akses ke data session diwajibkan memanggil fungsi `session_start()` pada baris awal kodenya[cite: 165, 166].
-* [cite_start]**Cookies:** Cookies adalah file teks berukuran kecil yang disimpan oleh peramban di sisi klien (komputer pengguna)[cite: 160, 161]. [cite_start]Dalam proyek ini, cookies dimanfaatkan untuk mengingat informasi preferensi pengguna, khususnya untuk mengelola status "ingat saya" (*remember me*) saat pengguna melakukan *login*[cite: 160]. [cite_start]Pembuatan cookies menggunakan fungsi `setcookie()` yang dapat diatur waktu kedaluwarsanya (*expiration time*)[cite: 186, 161].
+### 2. Logika Konsep Penyimpanan Data
+Sistem otentikasi yang dibangun tidak sekadar memvalidasi data, tetapi juga menjaga status pengguna agar tetap dikenali selama menavigasi halaman web. Hal ini dicapai melalui dua pendekatan logika utama:
 
-### 3. Struktur Direktori dan Arsitektur Sistem
-Sesuai dengan instruksi pengerjaan modul, proyek ini telah diorganisasikan ke dalam beberapa berkas dan direktori untuk memisahkan antara antarmuka dan logika pemrosesan. Struktur utama terdiri dari:
-* [cite_start]`index.php`: Merupakan halaman beranda utama yang diubah dari format awal `index.html`[cite: 195].
-* [cite_start]`login.php`: Berfungsi sebagai antarmuka halaman otentikasi tempat pengguna memasukkan kredensial[cite: 195].
-* [cite_start]`controller/`: Sebuah folder baru yang dibuat khusus untuk menyimpan berkas-berkas pengontrol logika sistem[cite: 195].
-    * [cite_start]`controller/proses_login.php`: Berkas yang menangani logika pemrosesan data saat pengguna mencoba masuk[cite: 195, 199].
-    * [cite_start]`controller/logout.php`: Berkas yang berisi logika untuk mengeluarkan pengguna dari sistem (terminasi sesi)[cite: 195, 199].
+* **Manajemen Sesi (Session):** Logika ini digunakan untuk menciptakan ruang memori sementara di dalam server. Ketika pengguna berhasil tervalidasi, server akan mencatat identitas pengguna tersebut. Selama catatan ini masih ada, pengguna dapat berpindah dari satu halaman ke halaman lain tanpa harus memasukkan kata sandi berulang kali. Saat pengguna memutuskan untuk keluar dari sistem, atau menutup peramban, catatan memori ini akan dihancurkan sepenuhnya demi keamanan.
+* **Manajemen Kuki (Cookies):** Berbeda dengan sesi yang disimpan di server, logika kuki bekerja dengan cara menitipkan sebuah berkas teks kecil di dalam peramban (browser) milik pengguna. Pada proyek ini, kuki dimanfaatkan untuk menjalankan fitur pengingat atau "remember me". Jika fitur ini diaktifkan saat proses masuk, sistem akan meninggalkan jejak di peramban pengguna sehingga pada kunjungan berikutnya, sistem sudah mengenali preferensi pengguna tersebut secara otomatis sebelum sesi baru dibuat.
 
-### 4. Spesifikasi Fungsional Fitur
-Sistem yang dibangun memiliki beberapa alur dan kondisi spesifik sebagai berikut:
+### 3. Struktur Organisasi Berkas
+Untuk menjaga agar sistem tetap terstruktur dan rapi, berkas-berkas proyek dipisahkan berdasarkan fungsinya. Pemisahan ini memastikan bahwa bagian antarmuka (visual) tidak bercampur secara langsung dengan bagian pemrosesan logika.
 
-**A. Halaman Beranda (`index.php`)**
-* [cite_start]Pada antarmuka navigasi, terdapat tombol *login* yang mengarahkan pengguna ke halaman `login.php`[cite: 196].
-* Halaman ini memiliki kondisi pengecekan sesi. [cite_start]Jika terdeteksi bahwa pengguna sudah melakukan *login*, maka antarmuka akan berubah untuk menampilkan nama pengguna (username) dan menyediakan tombol untuk *logout*[cite: 199].
+* **Berkas `index.php`**: Berfungsi sebagai halaman beranda utama.
+* **Berkas `login.php`**: Berfungsi sebagai halaman antarmuka formulir otentikasi.
+* **Direktori `controller`**: Sebuah ruang khusus yang dibuat untuk menampung berkas-berkas pemrosesan logika di belakang layar.
+    * **Berkas `proses_login.php`**: Bertugas menerima data dari formulir, memvalidasinya, dan menentukan apakah pengguna berhak masuk atau tidak.
+    * **Berkas `logout.php`**: Bertugas menangani permintaan pengguna untuk mengakhiri akses dan menghapus rekam jejak identitas mereka di server.
 
-**B. Halaman Otentikasi (`login.php`)**
-* [cite_start]Sistem memuat fungsi `session_start()` dan kondisi pengecekan di awal halaman[cite: 165, 198]. [cite_start]Jika pengguna yang sudah berstatus *login* mencoba mengakses halaman ini, sistem akan secara otomatis mengalihkan (*redirect*) mereka kembali ke halaman beranda[cite: 198].
-* [cite_start]Formulir *login* dirancang untuk memuat beberapa elemen wajib: kolom untuk input *username*, kolom untuk input *password*, kotak centang (*check box*) untuk fitur "remember me", tombol *login* untuk mengirim data (*submit*), serta tautan/tombol untuk kembali ke beranda utama[cite: 198].
+### 4. Alur Kerja dan Logika Sistem
+Sistem ini dirancang dengan alur kerja yang sangat memperhatikan pengalaman dan pembatasan akses pengguna. Berikut adalah rincian logika pada masing-masing bagian:
 
-**C. Pemrosesan Data (`controller/proses_login.php`)**
-* Berkas ini mengeksekusi logika validasi[cite: 199]. Jika proses validasi kredensial berhasil, sistem akan menginisialisasi nilai ke dalam variabel session untuk mempertahankan status masuk pengguna[cite: 154]. 
-* [cite_start]Apabila kotak centang "remember me" diaktifkan, sistem akan menjalankan fungsi `setcookie()` untuk menyimpan data pengguna secara lokal di peramban sesuai jangka waktu yang ditentukan[cite: 160, 186].
+**A. Logika pada Halaman Beranda**
+Saat pengguna membuka halaman utama, sistem akan melakukan pengecekan status terlebih dahulu. Jika sistem mengenali bahwa pengguna tersebut belum memiliki akses masuk, maka bilah navigasi hanya akan menampilkan tombol untuk menuju halaman otentikasi. Namun, jika sistem mendeteksi rekam jejak pengguna yang sudah masuk, antarmuka akan menyesuaikan diri dengan menampilkan sapaan nama pengguna tersebut beserta tombol untuk keluar dari sistem.
 
-**D. Proses Keluar (`controller/logout.php`)**
-* [cite_start]Berkas ini mengeksekusi proses penghentian sesi yang sedang berjalan[cite: 199]. [cite_start]Seluruh data otentikasi pengguna pada session akan dihapus menggunakan fungsi `session_destroy()`, memastikan akses keamanan dikembalikan ke status awal[cite: 168, 169].
+**B. Logika pada Halaman Formulir Masuk**
+Halaman ini memuat formulir yang meminta identitas pengguna, kata sandi, serta menawarkan opsi pengingat (remember me). Terdapat sebuah logika perlindungan di halaman ini: apabila ada pengguna yang sudah berhasil masuk ke dalam sistem mencoba untuk mengakses halaman formulir ini lagi, sistem akan menolaknya dan langsung mengarahkan pengguna tersebut kembali ke halaman beranda. Hal ini mencegah terjadinya tumpang tindih status akses.
 
-### 5. Panduan Instalasi dan Penggunaan Lokal
-1. Pastikan lingkungan pengembangan (*local server environment*) seperti XAMPP telah terinstal dan terkonfigurasi dengan baik.
-2. Tempatkan seluruh folder proyek ini ke dalam direktori publik web server (contoh: folder `htdocs` pada XAMPP).
-3. Jalankan layanan modul Apache melalui panel kontrol aplikasi *server*.
-4. Akses proyek melalui peramban web dengan mengetikkan alamat `http://localhost/[nama_folder_proyek]`.
+**C. Logika Pemrosesan Akses Masuk**
+Setelah pengguna menekan tombol masuk, data akan dikirim ke pengontrol. Di sini, sistem mengevaluasi kecocokan data. Karena belum menggunakan basis data yang kompleks, sistem akan mencocokkan inputan dengan data statis yang sudah ditetapkan. Jika cocok, sistem akan memberikan izin masuk dengan mencatat identitas pengguna ke dalam memori server. Di saat yang sama, sistem mengevaluasi apakah kotak opsi pengingat dicentang. Jika iya, sistem akan memberikan instruksi tambahan kepada peramban pengguna untuk menyimpan jejak kuki.
+
+**D. Logika Pemrosesan Keluar Sistem**
+Ketika pengguna memilih untuk mengakhiri sesi, sistem akan memanggil pengontrol keluar. Logika yang berjalan di sini adalah pembersihan total. Sistem akan mencari catatan identitas pengguna tersebut di dalam memori server dan menghancurkannya. Setelah dipastikan bersih, pengguna akan dikembalikan ke halaman beranda sebagai pengunjung anonim biasa.
+
+### 5. Panduan Simulasi Lingkungan Lokal
+Untuk melihat jalannya logika sistem ini secara langsung, proyek harus dijalankan di atas lingkungan server simulasi.
+
+1. Siapkan aplikasi penyedia layanan server lokal pada komputer Anda, seperti XAMPP atau perangkat lunak sejenis.
+2. Salin seluruh direktori proyek ini dan tempatkan ke dalam folder penyedia layanan web (misalnya folder `htdocs` pada aplikasi XAMPP).
+3. Aktifkan modul server Apache melalui panel kontrol aplikasi tersebut.
+4. Buka peramban web Anda dan akses sistem dengan mengetikkan tautan `http://localhost/` diikuti dengan nama direktori proyek Anda.
 
 ---
-*Laporan ini disusun sebagai bentuk dokumentasi teknis dari penyelesaian praktikum dasar pemrograman PHP.*
+*Dokumentasi ini disusun secara komprehensif untuk memenuhi standar pelaporan tugas praktikum, menjelaskan tidak hanya wujud akhir dari program, melainkan juga logika arsitektur yang membangunnya.*
