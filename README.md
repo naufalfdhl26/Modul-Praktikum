@@ -1,43 +1,44 @@
-Kode HTML tersebut merupakan tampilan website sederhana untuk Sistem Manajemen Sepatu “Cibaduyut Shoes” yang dibuat menggunakan HTML dan framework Bootstrap 5. Struktur dasar dimulai dengan deklarasi <!DOCTYPE html> yang menandakan bahwa dokumen menggunakan HTML5. Pada bagian <html lang="en"> ditentukan bahwa bahasa utama halaman adalah bahasa Inggris.
 
-Di dalam bagian <head>, terdapat pengaturan karakter menggunakan <meta charset="UTF-8"> agar website dapat membaca berbagai jenis karakter dengan baik. Judul halaman ditentukan menggunakan tag <title> sehingga teks “Sistem Manajemen Sepatu” akan tampil pada tab browser. Selain itu, terdapat link CDN Bootstrap 5 yang berfungsi untuk memberikan desain dan tata letak yang rapi secara instan tanpa harus menulis CSS dari awal. File tambahan css/style.css juga dihubungkan untuk menambahkan styling khusus di luar Bootstrap.
+### 1. Deskripsi
+Proyek ini merupakan bentuk implementasi praktis dari modul Sistem Informasi Berbasis Web. Fokus utama dari pengembangan ini adalah untuk memahami dan menerapkan logika dasar bahasa pemrograman PHP sebagai skrip yang berjalan di sisi server. Sistem yang dibangun berupa purwarupa otentikasi pengguna (proses masuk dan keluar sistem) sederhana yang bertujuan untuk mendemonstrasikan bagaimana sebuah aplikasi web mengenali, mengingat, dan membatasi hak akses penggunanya.
 
-Pada bagian <body>, terdapat beberapa komponen utama. Pertama adalah navbar (navigation bar) dengan warna gelap menggunakan class navbar-dark bg-dark. Di dalamnya terdapat nama brand “CIBADUYUT SHOES”. Navbar ini berfungsi sebagai bagian header atau identitas utama website.
+### 2. Logika Konsep Penyimpanan Data
+Sistem otentikasi yang dibangun tidak sekadar memvalidasi data, tetapi juga menjaga status pengguna agar tetap dikenali selama menavigasi halaman web. Hal ini dicapai melalui dua pendekatan logika utama:
 
-Selanjutnya terdapat bagian hero section, yaitu area besar di bawah navbar dengan teks utama “Sistem Manajemen Sepatu” dan subjudul “Kelola Data Sepatu Dengan Mudah”. Bagian ini biasanya digunakan sebagai tampilan pembuka agar website terlihat lebih menarik dan informatif.
+* **Manajemen Sesi (Session):** Logika ini digunakan untuk menciptakan ruang memori sementara di dalam server. Ketika pengguna berhasil tervalidasi, server akan mencatat identitas pengguna tersebut. Selama catatan ini masih ada, pengguna dapat berpindah dari satu halaman ke halaman lain tanpa harus memasukkan kata sandi berulang kali. Saat pengguna memutuskan untuk keluar dari sistem, atau menutup peramban, catatan memori ini akan dihancurkan sepenuhnya demi keamanan.
+* **Manajemen Kuki (Cookies):** Berbeda dengan sesi yang disimpan di server, logika kuki bekerja dengan cara menitipkan sebuah berkas teks kecil di dalam peramban (browser) milik pengguna. Pada proyek ini, kuki dimanfaatkan untuk menjalankan fitur pengingat atau "remember me". Jika fitur ini diaktifkan saat proses masuk, sistem akan meninggalkan jejak di peramban pengguna sehingga pada kunjungan berikutnya, sistem sudah mengenali preferensi pengguna tersebut secara otomatis sebelum sesi baru dibuat.
 
-Setelah itu terdapat bagian dashboard ringkasan data yang terdiri dari tiga card, yaitu:
+### 3. Struktur Organisasi Berkas
+Untuk menjaga agar sistem tetap terstruktur dan rapi, berkas-berkas proyek dipisahkan berdasarkan fungsinya. Pemisahan ini memastikan bahwa bagian antarmuka (visual) tidak bercampur secara langsung dengan bagian pemrosesan logika.
 
-Total Produk (12)
+* **Berkas `index.php`**: Berfungsi sebagai halaman beranda utama.
+* **Berkas `login.php`**: Berfungsi sebagai halaman antarmuka formulir otentikasi.
+* **Direktori `controller`**: Sebuah ruang khusus yang dibuat untuk menampung berkas-berkas pemrosesan logika di belakang layar.
+    * **Berkas `proses_login.php`**: Bertugas menerima data dari formulir, memvalidasinya, dan menentukan apakah pengguna berhak masuk atau tidak.
+    * **Berkas `logout.php`**: Bertugas menangani permintaan pengguna untuk mengakhiri akses dan menghapus rekam jejak identitas mereka di server.
 
-Stok Tersedia (85)
+### 4. Alur Kerja dan Logika Sistem
+Sistem ini dirancang dengan alur kerja yang sangat memperhatikan pengalaman dan pembatasan akses pengguna. Berikut adalah rincian logika pada masing-masing bagian:
 
-Kategori (3)
+**A. Logika pada Halaman Beranda**
+Saat pengguna membuka halaman utama, sistem akan melakukan pengecekan status terlebih dahulu. Jika sistem mengenali bahwa pengguna tersebut belum memiliki akses masuk, maka bilah navigasi hanya akan menampilkan tombol untuk menuju halaman otentikasi. Namun, jika sistem mendeteksi rekam jejak pengguna yang sudah masuk, antarmuka akan menyesuaikan diri dengan menampilkan sapaan nama pengguna tersebut beserta tombol untuk keluar dari sistem.
 
-Ketiga card tersebut menggunakan komponen Bootstrap berbentuk kotak (card) yang disusun dalam satu baris menggunakan sistem grid (row dan col-md-4). Bagian ini berfungsi untuk menampilkan informasi statistik secara singkat.
+**B. Logika pada Halaman Formulir Masuk**
+Halaman ini memuat formulir yang meminta identitas pengguna, kata sandi, serta menawarkan opsi pengingat (remember me). Terdapat sebuah logika perlindungan di halaman ini: apabila ada pengguna yang sudah berhasil masuk ke dalam sistem mencoba untuk mengakses halaman formulir ini lagi, sistem akan menolaknya dan langsung mengarahkan pengguna tersebut kembali ke halaman beranda. Hal ini mencegah terjadinya tumpang tindih status akses.
 
-Di bawah dashboard terdapat bagian Daftar Sepatu yang menampilkan tiga produk, yaitu:
+**C. Logika Pemrosesan Akses Masuk**
+Setelah pengguna menekan tombol masuk, data akan dikirim ke pengontrol. Di sini, sistem mengevaluasi kecocokan data. Karena belum menggunakan basis data yang kompleks, sistem akan mencocokkan inputan dengan data statis yang sudah ditetapkan. Jika cocok, sistem akan memberikan izin masuk dengan mencatat identitas pengguna ke dalam memori server. Di saat yang sama, sistem mengevaluasi apakah kotak opsi pengingat dicentang. Jika iya, sistem akan memberikan instruksi tambahan kepada peramban pengguna untuk menyimpan jejak kuki.
 
-Nike P-6000
+**D. Logika Pemrosesan Keluar Sistem**
+Ketika pengguna memilih untuk mengakhiri sesi, sistem akan memanggil pengontrol keluar. Logika yang berjalan di sini adalah pembersihan total. Sistem akan mencari catatan identitas pengguna tersebut di dalam memori server dan menghancurkannya. Setelah dipastikan bersih, pengguna akan dikembalikan ke halaman beranda sebagai pengunjung anonim biasa.
 
-Nike Air Force 1
+### 5. Panduan Simulasi Lingkungan Lokal
+Untuk melihat jalannya logika sistem ini secara langsung, proyek harus dijalankan di atas lingkungan server simulasi.
 
-Nike Air Jordan 1 Low
+1. Siapkan aplikasi penyedia layanan server lokal pada komputer Anda, seperti XAMPP atau perangkat lunak sejenis.
+2. Salin seluruh direktori proyek ini dan tempatkan ke dalam folder penyedia layanan web (misalnya folder `htdocs` pada aplikasi XAMPP).
+3. Aktifkan modul server Apache melalui panel kontrol aplikasi tersebut.
+4. Buka peramban web Anda dan akses sistem dengan mengetikkan tautan `http://localhost/` diikuti dengan nama direktori proyek Anda.
 
-Setiap produk ditampilkan dalam bentuk card yang berisi gambar sepatu, nama produk, harga, stok, dan tombol “Detail”. Layout ini juga menggunakan sistem grid Bootstrap agar tampil rapi dan responsif.
-
-Berikutnya terdapat bagian form Tambah Sepatu. Form ini digunakan untuk menambahkan data sepatu baru. Di dalamnya terdapat beberapa input:
-
-Nama Sepatu (input text)
-
-Harga (input number)
-
-Stok (input number)
-
-Kategori (dropdown select: Running, Basket, Casual)
-
-Di bagian bawah form terdapat tombol “Simpan” untuk mengirim data. Secara tampilan, form ini sudah menggunakan class Bootstrap seperti form-control dan form-select agar terlihat rapi dan modern.
-
-Terakhir terdapat bagian footer dengan latar belakang gelap dan teks putih yang menampilkan copyright “@ 2026 Sistem Manajemen Sepatu Toko Sepatu”. Di bagian paling bawah juga terdapat script Bootstrap JS untuk mendukung fungsi interaktif seperti navbar toggle.
-
-Secara keseluruhan, kode ini merupakan tampilan frontend sederhana untuk sistem manajemen data sepatu. Website ini sudah memiliki struktur lengkap mulai dari header, hero section, dashboard ringkasan, daftar produk, form input data, hingga footer, serta memanfaatkan Bootstrap agar tampilannya responsif dan menarik.
+---
+*Dokumentasi ini disusun secara komprehensif untuk memenuhi standar pelaporan tugas praktikum, menjelaskan tidak hanya wujud akhir dari program, melainkan juga logika arsitektur yang membangunnya.*
